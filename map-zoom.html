@@ -9,10 +9,16 @@
 			  fill: #e6f2ff;
 			  stroke: black;
 			}
-			
-			.overlay {
-			  fill: none;
-			  pointer-events: all;
+
+			.button {
+				background-color: #4CAF50; /* Green */
+				border: none;
+				color: white;
+				padding: 15px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 16px;
 			}
 		</style>
 
@@ -24,7 +30,7 @@
 	<body>
 		<div>
 			<h1>Zoom To Coordinates</h1>
-			<button type=button onclick="zoomTo(pitt, 6)">Zoom</button>
+			<button class="button" type=button onclick="zoomTo(pitt, 6)">Zoom to Pittsburgh</button>
 		</div>
 		<svg width="960" height="500"></svg>
 	</body>
@@ -57,14 +63,11 @@
 				.attr("fill", "red");
 			});
 
-		// zoomTo(pitt,6);
-
 		//Zooms to specified coordinates
 		function zoomTo(location, scale){
             //convert long lat to cartesian coordinates
 			var point = projection(location);
 
-		 	//TODO: check for translate(x,y,k) function
 			g
 		 		.transition()
 		 		.duration(5000)
@@ -83,7 +86,7 @@
 
 		//Custom helper function for transform calculations
 		function transform(point, scale){
-			//TODO: Confirm calculations
+			//Calculations determin middle of map then subtract x and y offset
 			var px = width/2 - point[0] * scale;
 			var py = height/2 - point[1] * scale;
 			return transformStrBuilder(px, py, scale);
