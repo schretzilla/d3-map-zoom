@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+
+<head>
+		<title>D3 Test</title>
+
+		<style>
+			.states {
+			  fill: #e6f2ff;
+			  stroke: black;
+			}
+			
+			.overlay {
+			  fill: none;
+			  pointer-events: all;
+			}
+		</style>
+
+		<script src="http://d3js.org/d3.v4.min.js"></script>
+		<script src="http://d3js.org/topojson.v1.min.js"></script>
+
+
+</head>
+	<body>
+		<h1>Zoom To Coordinates</h1>
+		<svg width="960" height="500"></svg>
+	</body>
+    
+	<script>
+		
+		var pitt = [-79.995888, 40.440624];
+
+		var svg = d3.select("svg"),
+			width = +svg.attr("width")
+			height = +svg.attr("height");
+		
+		var projection = d3.geoAlbersUsa();
+
+		var path = d3.geoPath()
+		    .projection(projection);
+
+		g = svg.append("g");
+
+		d3.json("us_states_topo_simplified_20m.json", function(error, us){
+			g.append("path")
+				.attr("class", "states")
+      			.datum(topojson.feature(us, us.objects.states))
+				.attr("d", path);
+
+			g.append("circle")
+				.attr("cx", projection(pitt)[0])
+				.attr("cy", projection(pitt)[1])
+				.attr("r", "4px")
+				.attr("fill", "red");
+			});
+
+		zoomTo(pitt,6);
+
+		//Zooms to specified coordinates
+		function zoomTo(location, scale){
+            //convert long lat to cartesian coordinates
+			var point = projection(location);
+
+		 	//TODO: check for translate(x,y,k) function
+			g
+		 		.transition()
+		 		.duration(5000)
+		 		.attr("transform", transform(point, scale))
+		 		.on("end", zoomOut);			
+		}
+
+		//Zooms out to full map scale
+		function zoomOut(){
+			g
+				.transition()
+		 		.duration(5000)
+		 		.attr("transform", transformStrBuilder(0,0,1));
+		}
+
+
+		//Custom helper function for transform calculations
+		function transform(point, scale){
+			//TODO: Confirm calculations
+			var px = width/2 - point[0] * scale;
+			var py = height/2 - point[1] * scale;
+			return transformStrBuilder(px, py, scale);
+		}
+
+		//custom helper function for transform string building
+		function transformStrBuilder(px, py, scale){
+			return "translate("+px+","+py+")scale("+scale+")";
+		}
+
+
+	</script>
+
+</html>
