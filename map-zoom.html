@@ -2,7 +2,7 @@
 <html>
 
 <head>
-		<title>D3 Test</title>
+		<title>Map Zoom</title>
 
 		<style>
 			.states {
@@ -22,7 +22,10 @@
 
 </head>
 	<body>
-		<h1>Zoom To Coordinates</h1>
+		<div>
+			<h1>Zoom To Coordinates</h1>
+			<button type=button onclick="zoomTo(pitt, 6)">Zoom</button>
+		</div>
 		<svg width="960" height="500"></svg>
 	</body>
     
@@ -41,7 +44,7 @@
 
 		g = svg.append("g");
 
-		d3.json("us_states_topo_simplified_20m.json", function(error, us){
+		d3.json("us-states.json", function(error, us){
 			g.append("path")
 				.attr("class", "states")
       			.datum(topojson.feature(us, us.objects.states))
@@ -50,11 +53,11 @@
 			g.append("circle")
 				.attr("cx", projection(pitt)[0])
 				.attr("cy", projection(pitt)[1])
-				.attr("r", "4px")
+				.attr("r", "2px")
 				.attr("fill", "red");
 			});
 
-		zoomTo(pitt,6);
+		// zoomTo(pitt,6);
 
 		//Zooms to specified coordinates
 		function zoomTo(location, scale){
